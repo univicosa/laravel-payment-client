@@ -238,27 +238,27 @@ Payments made by boleto and paid will generate a refund in name of the payer and
 
 ## _Facades_
 
-````php
+```php
 @method \Payment::createBeneficiary(Beneficiary $beneficiary): array
 @api POST '/api/{version}/beneficiary'
 
 @return array with the response of Post action
 ```
-````php
+```php
 @method \Payment::send(\JsonSerializable $payment): array
 @api POST '/api/{version}/{paymentType}'
 
 @return array with the response of Post action
 ```
 
-````php
+```php
 @method \Payment::getPayer(): array
 @api GET '/api/{version}/user'
 
 @return array with data of loged user
 ```
 
-````php
+```php
 @method \Payment::cancel(string $type, string $id): array
 @api DELETE '/api/{version}/{PaymentType}/{paymentId}'
 
