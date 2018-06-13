@@ -36,11 +36,24 @@ The file `config/openid.php` will be generated.
 
 For do payments requests the client need to use a valid Beneficiary. For create one on demand just implement the `Payment::createBeneficiary()` method following the rules:
 
+**Request body**
+
+```json
+{
+  "name" : "bail|required|string|min:5",
+  "system" : "bail|required|string|size:24",
+  "account" : "bail|required|string",
+  "valid_until" : "bail|required|date|after:now"
+}
+```
+
+**Content explanation**
+
 ```php
-'name'        => 'bail|required|string|min:5', // The name that describes your beneficiary in the report list
-'system'      => 'bail|required|string|size:24', // The id that the Payment server admin provides to you
-'account'     => 'bail|required|string', // The bank account that Payment server admin provides to you
-'valid_until' => 'bail|required|date|after:now', // The final date your account will accepts payments requests
+'name'        => 'The name that describes your beneficiary in the report list',
+'system'      => 'The id that the Payment server admin provides to you',
+'account'     => 'The bank account that Payment server admin provides to you',
+'valid_until' => 'The final date your account will accepts payments requests'
 ```
 
 ## Payment requests
@@ -51,26 +64,48 @@ The request accepts N items by request, turning possible a client use a cart of 
 
 The Payment request should follow the rules for all Payment instances. All types available will extends:
 
+**Request body**
+
+```json
+{
+  "payer": {
+    "name" : "bail|required|string|min:3",
+    "address" : "bail|required|string|min:3",
+    "district" : "bail|required|string|min:2",
+    "cep" : "bail|required|string|min:8|max:9|cep",
+    "state" : "bail|required|string|min:2",
+    "city" : "bail|required|string|min:3",
+    "cpf" : "bail|required|string|size:11|cpf"
+  },
+  "value" : "bail|required|numeric|min:0",
+  "operator" : "bail|required|string",
+  "items" : [
+      {
+        "name" : "bail|required|string|min:3",
+        "amount" : "bail|required|numeric|min:0",
+        "discount_amount" : "bail|required|numeric|min:0",
+        "final_value" : "bail|required|numeric|min:0",
+        "discounts" : [
+          {
+            "*" : "bail|filled|array|min:1"
+          }
+        ],
+        "beneficiary" : "bail|required|string|size:24",
+        "details" : [
+          {
+            "item" : "bail|required|string|min:3",
+            "value" : "bail|required|numeric|min:0"
+          }  
+        ]
+      }
+    ]
+}
+```
+
+**Content explanation**
+
 ```php
-'payer.name'              => 'bail|required|string|min:3',
-'payer.address'           => 'bail|required|string|min:3',
-'payer.district'          => 'bail|required|string|min:2',
-'payer.cep'               => 'bail|required|string|min:8|max:9|cep',
-'payer.state'             => 'bail|required|string|min:2',
-'payer.city'              => 'bail|required|string|min:3',
-'payer.cpf'               => 'bail|required|string|size:11|cpf',
-'value'                   => 'bail|required|numeric|min:0',
-'operator'                => 'bail|required|string', // the financier operator of your transaction. EX: SICOOB, Cielo
-'items'                   => 'bail|required|array|min:1',
-'items.*.name'            => 'bail|required|string|min:3',
-'items.*.amount'          => 'bail|required|numeric|min:0',
-'items.*.discount_amount' => 'bail|required|numeric|min:0',
-'items.*.final_value'     => 'bail|required|numeric|min:0',
-'items.*.discounts'       => 'bail|filled|array|min:1',
-'items.*.beneficiary'     => 'bail|required|string|size:24',
-'items.*.details'         => 'bail|required|array|min:1',
-'items.*.details.*.item'  => 'bail|required|string|min:3',
-'items.*.details.*.value' => 'bail|required|numeric|min:0',
+'operator' => 'the financier operator of your transaction. EX: SICOOB, Cielo'
 ```
 
 ## Payment types availiable
@@ -81,10 +116,23 @@ All the following types will extends the default rules of Payment class.
 
 All current payments via boleto accepts only the SICOOB operator and the return methods are operated manually. The notification of payment are maded after that and can wait 72 hour for the bank return.
 
+**Request body**
+
+```json
+{
+  "descriptions" : [
+    {
+      "description" : "bail|required|string|min:5"
+    }
+  ],
+  "deadline" : "bail|required|integer|min:0"
+}
+```
+
+**Content explanation**
+
 ```php
-'descriptions'               => 'bail|required|array|min:1|max:4', // add the descriptions to boleto's document body
-'descriptions.*.description' => 'bail|required|string|min:5',
-'deadline'                   => 'bail|required|integer|min:0', // defines the deadline for your boleto be payed in days
+'descriptions' => 'add the descriptions to boleto's document body, max 4'
 ```
 
 **PS:** if the deadline recognizes the final date as a not util day, the end date will be the next monday.
@@ -93,31 +141,51 @@ All current payments via boleto accepts only the SICOOB operator and the return 
 
 All current payments via credit card accpts the brands American Express, Diners Club, Discover, JCB, MasterCard, Visa, Elo and Aura.
 
-```php
-'credit_card.cvv'        => 'bail|required|digits_between:3,4',
-'credit_card.brand'      => 'bail|required|string',
-'credit_card.number'     => 'bail|required|digits_between:13,16|card',
-'credit_card.holder'     => 'bail|required|string|min:5',
-'credit_card.expiration' => 'bail|required|date_format:m/Y|after_or_equal:now',
-'installments'           => 'bail|required|integer|min:1|max:6',
+**Request body**
+
+```json
+{
+  "credit_card" : {
+    "cvv" : "bail|required|digits_between:3,4",
+    "brand" : "bail|required|string",
+    "number" : "bail|required|digits_between:13,16|card",
+    "holder" : "bail|required|string|min:5",
+    "expiration" : "bail|required|date_format:m/Y|after_or_equal:now"
+  },
+  "installments" : "bail|required|integer|min:1|max:6"
+}
 ```
 
 ### Debit card
 
 All current payments via debit card accepts only the brands MasterCard and Visa and will requires an additional validation by the user in their corresponding Bank.
 
+**Request body**
+
+```json
+{
+  "debit_card" : {
+    "cvv" : "bail|required|digits_between:3,4",
+    "brand" : "bail|required|string",
+    "number" : "bail|required|digits_between:13,16|card",
+    "holder" : "bail|required|string|min:5",
+    "expiration" : "bail|required|date_format:m/Y|after_or_equal:now",
+    "callback" : "bail|required|url"
+  }
+}
+```
+
+**Content explanation**
+
 ```php
-'debit_card.cvv'        => 'bail|required|digits_between:3,4',
-'debit_card.brand'      => 'bail|required|string,
-'debit_card.number'     => 'bail|required|digits_between:13,16|card',
-'debit_card.holder'     => 'bail|required|string|min:5',
-'debit_card.expiration' => 'bail|required|date_format:m/Y|after_or_equal:now',
-'debit_card.callback'   => 'bail|required|url', // the callback route for the operator's redirect. Ex: /payment/recieved.html
+'debit_card.callback' => 'the callback route for the operator's redirect. Ex: /payment/recieved.html'
 ```
 
 ### Free
 
 The free payment is a instance that receives isents requests generated with 100% discount (vouchers included) and just extends the default rules and need to receive the 'value' key as a zero.
+
+**Content explanation**
 
 ```php
 'value' => 'bail|required|numeric|min:0|max:0'
@@ -127,12 +195,20 @@ The free payment is a instance that receives isents requests generated with 100%
 
 The presential payment are maided by authorized users under a admin panel and accepts payment in cash (type => 'money') or via card machine (type => 'credit_card' and type => 'debit_card') and excluded the following parent rules: 'payer.address', 'payer.district', 'payer.cep', 'payer.state' and 'payer.city'.
 
-```php
-'presential.type'              => 'bail|required|string',
-'presential.installments'      => 'bail|required|integer|min:1',
-'presential.responsible.name'  => 'bail|required|string|min:3',
-'presential.responsible.email' => 'bail|required|string|email',
-'presential.responsible.cpf'   => 'bail|required|string|size:11|cpf',
+**Request body**
+
+```json
+{
+  "presential" : {
+    "type" : "bail|required|string",
+    "installments" : "bail|required|integer|min:1",
+    "responsible" : {
+      "name" : "bail|required|string|min:3",
+      "email" : "bail|required|string|email",
+      "cpf" : "bail|required|string|size:11|cpf"
+    }
+  }
+}
 ```
 
 ## Payment status
@@ -151,3 +227,40 @@ The status 'payed', 'canceled' and 'denied' are endpoints and not receives new n
 The driver implements a route `/api/payment` that receives the push notifications with the change of payments status from the Payment server. The notification contains the payment_id and the updated status.
 
 The method and controller that will treat the return need to be defined in the published `config/payment.php` file.
+
+## Payment refund
+
+It's possible to refund a payment using the Facade `\Payment::cancel()`. The method requires the payment ID as a parameter and will call the cancel process in the Payment server.
+
+Payments maid by credit card will generate a refund directly in the Invoice of the client. 
+
+Payments made by boleto and paid will generate a refund in name of the payer and the process need to be treated internally, by the financial operator, according of the internal rules of IES.
+
+## _Facades_
+
+````php
+@method \Payment::createBeneficiary(Beneficiary $beneficiary): array
+@api POST '/api/{version}/beneficiary'
+
+@return array with the response of Post action
+```
+````php
+@method \Payment::send(\JsonSerializable $payment): array
+@api POST '/api/{version}/{paymentType}'
+
+@return array with the response of Post action
+```
+
+````php
+@method \Payment::getPayer(): array
+@api GET '/api/{version}/user'
+
+@return array with data of loged user
+```
+
+````php
+@method \Payment::cancel(string $type, string $id): array
+@api DELETE '/api/{version}/{PaymentType}/{paymentId}'
+
+@return array with the response of Delete action
+```
