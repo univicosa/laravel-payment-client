@@ -70,6 +70,7 @@ The Payment request should follow the rules for all Payment instances. All types
 {
   "payer": {
     "name" : "bail|required|string|min:3",
+    "email" : "bail|required|string|min:5",
     "address" : "bail|required|string|min:3",
     "district" : "bail|required|string|min:2",
     "cep" : "bail|required|string|min:8|max:9|cep",
@@ -154,31 +155,6 @@ All current payments via credit card accpts the brands American Express, Diners 
   },
   "installments" : "bail|required|integer|min:1|max:6"
 }
-```
-
-### Debit card
-
-All current payments via debit card accepts only the brands MasterCard and Visa and will requires an additional validation by the user in their corresponding Bank.
-
-**Request body**
-
-```json
-{
-  "debit_card" : {
-    "cvv" : "bail|required|digits_between:3,4",
-    "brand" : "bail|required|string",
-    "number" : "bail|required|digits_between:13,16|card",
-    "holder" : "bail|required|string|min:5",
-    "expiration" : "bail|required|date_format:m/Y|after_or_equal:now",
-    "callback" : "bail|required|url"
-  }
-}
-```
-
-**Content explanation**
-
-```php
-'debit_card.callback' => 'the callback route for the operator's redirect. Ex: /payment/recieved.html'
 ```
 
 ### Free

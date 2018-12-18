@@ -2,6 +2,7 @@
 
 namespace Payments\Client\Service;
 
+use Illuminate\Http\JsonResponse;
 use Payments\Client\Entities\Beneficiary;
 use Payments\Client\Entities\Boleto;
 use Payments\Client\Entities\CreditCard;
@@ -91,6 +92,7 @@ class Client
 
         return [
             'name' => $user['name'],
+            'email' => $user['email'],
             'address' => $user['address']['street'],
             'district' => $user['address']['district'],
             'cep' => $user['address']['zip'],
@@ -101,32 +103,41 @@ class Client
 
     /**
      * @param \JsonSerializable $payment
-     * @return array
+     * @return JsonResponse
      * @throws \Exception
      */
-    public function send(\JsonSerializable $payment) : array
+    public function send(\JsonSerializable $payment) : JsonResponse
     {
         if ($payment instanceof Presential) {
             $uri = 'api/presential';
             $payer = $payment->getPayer();
         } else {
             $payer = $this->getPayer();
-
             if ($payment instanceof Boleto) {
                 $uri = 'api/boleto';
             } elseif ($payment instanceof CreditCard) {
                 $uri = 'api/credit';
-            } elseif ($payment instanceof DebitCard) {
-                $uri = 'api/debit';
             } elseif ($payment instanceof Free) {
                 $uri = 'api/free';
             } else {
                 throw new \Exception('Tipo não reconhecido.', 400);
             }
         }
-        $form_params = array_merge(compact('payer'), $payment->jsonSerialize());
-        $result = $this->client->post($uri, compact('form_params'));
+        try{
+            $form_params = array_merge(compact('payer'), $payment->jsonSerialize());
+            $result = $this->client->post($uri, compact('form_params'));
 
-        return json_decode($result->getBody(), true);
+            return \response()->json(json_decode($result->getBody()));
+        }catch (\GuzzleHttp\Exception\ClientException $exception) {
+            $response = $exception->getResponse();
+            $responseBodyAsString = json_decode($response->getBody()->getContents(), true);
+
+            return response()->json(
+                [
+                    'message' => $responseBodyAsString['errors']
+                ],
+                $exception->getCode() === 0 ? 400 : $exception->getCode()
+            );
+        }
     }
 }

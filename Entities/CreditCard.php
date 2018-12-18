@@ -14,27 +14,7 @@ class CreditCard implements \JsonSerializable
     /**
      * @var string
      */
-    private $number;
-
-    /**
-     * @var string
-     */
-    private $holder;
-
-    /**
-     * @var string
-     */
-    private $brand;
-
-    /**
-     * @var string
-     */
-    private $cvv;
-
-    /**
-     * @var Carbon
-     */
-    private $expiration;
+    private $token;
 
     /**
      * @var int
@@ -43,34 +23,35 @@ class CreditCard implements \JsonSerializable
 
     /**
      * CreditCard constructor.
-     * @param string $number
-     * @param string $holder
-     * @param string $brand
-     * @param string $cvv
-     * @param string $expiration
-     * @param int $installments
+     * @param string $token
      */
-    public function __construct(string $number,
-                                string $holder,
-                                string $brand,
-                                string $cvv,
-                                string $expiration,
-                                int $installments = 1)
+    public function __construct(string $token,int $installments = 1)
     {
-        $this->number = $number;
-        $this->holder = $holder;
-        $this->brand = $brand;
-        $this->cvv = $cvv;
-        $this->expiration = Carbon::createFromFormat('m/Y', $expiration);
+        $this->token = $token;
         $this->installments = $installments;
     }
-
     /**
      * @param Payment $payment
      */
     public function setPayment(Payment $payment)
     {
         $this->payment = $payment;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInstallments(): int
+    {
+        return $this->installments;
     }
 
     /**
@@ -83,12 +64,9 @@ class CreditCard implements \JsonSerializable
     public function jsonSerialize()
     {
         $credit_card = [
-            'cvv' => $this->cvv,
-            'brand' => $this->brand,
-            'number' => $this->number,
-            'holder' => $this->holder,
-            'expiration' => $this->expiration->format('m/Y')
+            'token' => $this->token
         ];
+
         $installments = $this->installments;
 
         return array_merge(compact('credit_card', 'installments'), $this->payment->jsonSerialize());
