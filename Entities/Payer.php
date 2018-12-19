@@ -12,16 +12,24 @@ class Payer implements \JsonSerializable
     /**
      * @var string
      */
+    private $email;
+
+    /**
+     * @var string
+     */
     private $cpf;
 
     /**
      * Payer constructor.
+     *
      * @param string $name
+     * @param string $email
      * @param string $cpf
      */
-    public function __construct(string $name, string $cpf)
+    public function __construct(string $name, string $email, string $cpf)
     {
         $this->name = $name;
+        $this->email = $email;
         $this->cpf = $cpf;
     }
 
@@ -35,8 +43,9 @@ class Payer implements \JsonSerializable
     public function jsonSerialize() : array
     {
         $name = $this->name;
+        $email = $this->email;
         $cpf = $this->cpf;
 
-        return compact('name', 'cpf');
+        return compact('name','email', 'cpf');
     }
 }
