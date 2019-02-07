@@ -61,7 +61,7 @@ class Client
     {
         try {
 
-            if (!in_array($type, ['boleto', 'credit', 'debit', 'presential'])) {
+            if (!in_array($type, ['boleto', 'credit', 'debit', 'presential','free'])) {
                 throw new \Exception('Tipo não suportado.');
             }
 
