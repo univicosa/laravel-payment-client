@@ -108,6 +108,7 @@ class Client
      */
     public function send(\JsonSerializable $payment) : JsonResponse
     {
+        ini_set('max_execution_time', 720);
         if ($payment instanceof Presential) {
             $uri = 'api/presential';
             $payer = $payment->getPayer();
