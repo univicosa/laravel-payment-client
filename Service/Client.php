@@ -135,7 +135,7 @@ class Client
 
             return response()->json(
                 [
-                    'message' => $responseBodyAsString['message']
+                    'message' => isset($responseBodyAsString['errors']) ? $responseBodyAsString['errors'] : $responseBodyAsString['message']
                 ],
                 $exception->getCode() === 0 ? 400 : $exception->getCode()
             );
