@@ -41,19 +41,19 @@ class Item implements \JsonSerializable
     private $details;
 
     /**
-     * Item constructor.
      * @param string $name
      * @param float $amount
      * @param float $discount_amount
      * @param float $final_value
      * @param string $beneficiary
      */
-    public function __construct(string $name,
-                                float $amount,
-                                float $discount_amount,
-                                float $final_value,
-                                string $beneficiary)
-    {
+    public function __construct(
+        string $name,
+        float $amount,
+        float $discount_amount,
+        float $final_value,
+        string $beneficiary
+    ) {
         $this->name = $name;
         $this->amount = $amount;
         $this->discount_amount = $discount_amount;
@@ -97,6 +97,7 @@ class Item implements \JsonSerializable
         $beneficiary = $this->beneficiary;
 
         $details = [];
+
         /** @var Detail $detail */
         foreach ($this->details  as $detail) {
             $details[] = $detail->jsonSerialize();

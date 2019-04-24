@@ -4,13 +4,8 @@ namespace Payments\Client\Entities;
 
 use Carbon\Carbon;
 
-class DebitCard implements \JsonSerializable
+class DebitCard extends PaymentAbstract implements \JsonSerializable
 {
-    /**
-     * @var Payment
-     */
-    private $payment;
-
     /**
      * @var string
      */
@@ -42,7 +37,6 @@ class DebitCard implements \JsonSerializable
     private $callback;
 
     /**
-     * CreditCard constructor.
      * @param string $number
      * @param string $holder
      * @param string $brand
@@ -50,22 +44,20 @@ class DebitCard implements \JsonSerializable
      * @param string $expiration
      * @param string $callback
      */
-    public function __construct(string $number, string $holder, string $brand, string $cvv, string $expiration, string $callback)
-    {
+    public function __construct(
+        string $number,
+        string $holder,
+        string $brand,
+        string $cvv,
+        string $expiration,
+        string $callback
+    ) {
         $this->number = $number;
         $this->holder = $holder;
         $this->brand = $brand;
         $this->cvv = $cvv;
         $this->expiration = Carbon::createFromFormat('m/Y', $expiration);
         $this->callback = $callback;
-    }
-
-    /**
-     * @param Payment $payment
-     */
-    public function setPayment(Payment $payment)
-    {
-        $this->payment = $payment;
     }
 
     /**

@@ -33,9 +33,15 @@ class Payment implements \JsonSerializable
         $this->items = [];
     }
 
-    public function addItem(Item $item)
+    /**
+     * @param Item $item
+     * @return Payment
+     */
+    public function addItem(Item $item) : self
     {
         $this->items[] = $item;
+
+        return $this;
     }
 
     /**

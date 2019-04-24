@@ -2,18 +2,22 @@
 
 namespace Payments\Client\Entities;
 
-class Presential implements \JsonSerializable
+class Presential extends PaymentAbstract implements \JsonSerializable
 {
+    /**
+     * @var string
+     */
     const MONEY = 'money';
 
+    /**
+     * @var string
+     */
     const CREDIT = 'credit_card';
 
-    const DEBIT = 'debit_card';
-
     /**
-     * @var Payment
+     * @var string
      */
-    private $payment;
+    const DEBIT = 'debit_card';
 
     /**
      * @var string
@@ -36,7 +40,6 @@ class Presential implements \JsonSerializable
     private $responsible;
 
     /**
-     * Presential constructor.
      * @param string $type
      * @param int $installments
      */
@@ -44,14 +47,6 @@ class Presential implements \JsonSerializable
     {
         $this->type = $type;
         $this->installments = $installments;
-    }
-
-    /**
-     * @param Payment $payment
-     */
-    public function setPayment(Payment $payment)
-    {
-        $this->payment = $payment;
     }
 
     /**

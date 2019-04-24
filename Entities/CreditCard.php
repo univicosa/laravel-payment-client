@@ -2,15 +2,8 @@
 
 namespace Payments\Client\Entities;
 
-use Carbon\Carbon;
-
-class CreditCard implements \JsonSerializable
+class CreditCard extends PaymentAbstract implements \JsonSerializable
 {
-    /**
-     * @var Payment
-     */
-    private $payment;
-
     /**
      * @var string
      */
@@ -22,20 +15,13 @@ class CreditCard implements \JsonSerializable
     private $installments;
 
     /**
-     * CreditCard constructor.
      * @param string $token
+     * @param int $installments
      */
-    public function __construct(string $token,int $installments = 1)
+    public function __construct(string $token, int $installments = 1)
     {
         $this->token = $token;
         $this->installments = $installments;
-    }
-    /**
-     * @param Payment $payment
-     */
-    public function setPayment(Payment $payment)
-    {
-        $this->payment = $payment;
     }
 
     /**

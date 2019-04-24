@@ -16,7 +16,6 @@ class Detail implements \JsonSerializable
     protected $value;
 
     /**
-     * Detail constructor.
      * @param string $item
      * @param float $value
      */

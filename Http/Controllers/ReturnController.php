@@ -25,6 +25,7 @@ class ReturnController extends Controller
         if ($token->isExpired() || !$token->verify($signer, config('payment.system'))) {
             abort(403);
         }
+
         if (!$token->hasClaim('payments')) {
             abort(422);
         }

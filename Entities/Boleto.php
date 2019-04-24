@@ -2,14 +2,8 @@
 
 namespace Payments\Client\Entities;
 
-
-class Boleto implements \JsonSerializable
+class Boleto extends PaymentAbstract implements \JsonSerializable
 {
-    /**
-     * @var Payment
-     */
-    private $payment;
-
     /**
      * @var array
      */
@@ -30,17 +24,15 @@ class Boleto implements \JsonSerializable
         $this->descriptions = [];
     }
 
-    public function addDescription(string $description)
+    /**
+     * @param string $description
+     * @return Boleto
+     */
+    public function addDescription(string $description) : self
     {
         $this->descriptions[] = compact('description');
-    }
 
-    /**
-     * @param Payment $payment
-     */
-    public function setPayment(Payment $payment)
-    {
-        $this->payment = $payment;
+        return $this;
     }
 
     /**
@@ -55,6 +47,9 @@ class Boleto implements \JsonSerializable
         $descriptions = $this->descriptions;
         $deadline = $this->deadline;
 
-        return array_merge(compact('descriptions', 'deadline'), $this->payment->jsonSerialize());
+        return array_merge(
+            compact('descriptions', 'deadline'),
+            $this->payment->jsonSerialize()
+        );
     }
 }

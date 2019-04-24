@@ -20,15 +20,17 @@ class Responsible implements \JsonSerializable
     private $cpf;
 
     /**
-     * Responsible constructor.
      * @param string $name
      * @param string $email
      * @param string $cpf
      */
-    public function __construct(string $name, string $email, string $cpf)
-    {
-        $this->name = $name;
-        $this->email = $email;
+    public function __construct(
+        string $name,
+        string $email,
+        string $cpf
+    ) {
+        $this->name = trim($name);
+        $this->email = trim($email);
         $this->cpf = $cpf;
     }
 

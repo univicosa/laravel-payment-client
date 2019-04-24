@@ -8,21 +8,8 @@
 namespace Payments\Client\Entities;
 
 
-class Free implements \JsonSerializable
+class Free extends PaymentAbstract implements \JsonSerializable
 {
-    /**
-     * @var Payment
-     */
-    private $payment;
-
-    /**
-     * @param Payment $payment
-     */
-    public function setPayment(Payment $payment)
-    {
-        $this->payment = $payment;
-    }
-
     /**
      * @return array
      */

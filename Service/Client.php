@@ -17,9 +17,6 @@ class Client
      */
     private $client;
 
-    /**
-     * Client constructor.
-     */
     public function __construct()
     {
         $this->client = new \GuzzleHttp\Client([
@@ -39,17 +36,15 @@ class Client
     public function createBeneficiary(Beneficiary $beneficiary) : array
     {
         try {
-
             $result = $this->client->post('api/beneficiary', ['form_params' => $beneficiary->jsonSerialize()]);
 
+            return json_decode($result->getBody(), true);
         } catch (\Exception $exception) {
             return [
                 'message' => json_decode($exception->getResponse()->getBody()->getContents())->message,
                 'code' => $exception->getCode()
             ];
         }
-
-        return json_decode($result->getBody(), true);
     }
 
     /**
@@ -60,21 +55,22 @@ class Client
     public function cancel(string $type, string $id) : array
     {
         try {
-
-            if (!in_array($type, ['boleto', 'credit', 'debit', 'presential','free'])) {
-                throw new \Exception('Tipo não suportado.');
+            $types = ['boleto', 'credit', 'debit', 'presential', 'free'];
+            if (!in_array($type, $types)) {
+                throw new \Exception(sprintf(
+                    'Tipo de cancelamento não suportado. Os tipos suportados são: %s', implode(', ', $types)
+                ));
             }
 
-            $result = $this->client->delete("api/$type/$id");
+            $result = $this->client->delete("api/{$type}/{$id}");
 
+            return json_decode($result->getBody(), true);
         } catch (\Exception $exception) {
             return [
                 'message' => json_decode($exception->getResponse()->getBody()->getContents())->message,
                 'code' => $exception->getCode()
             ];
         }
-
-        return json_decode($result->getBody(), true);
     }
 
     /**
@@ -86,6 +82,7 @@ class Client
         $client = \OpenId::getClient();
         $result = $client->get('api/user');
         $user = (\GuzzleHttp\json_decode($result->getBody(), true))['user'];
+
         if (!isset($user['address'])) {
             throw new \Exception('Endereço não preenchido.', 422);
         }
@@ -98,22 +95,27 @@ class Client
             'cep' => $user['address']['zip'],
             'state' => $user['address']['state']['initials'],
             'city' => $user['address']['city'],
-            'cpf' => $user['cpf']];
+            'cpf' => $user['cpf']
+        ];
     }
 
     /**
      * @param \JsonSerializable $payment
+     * @param array $payer
      * @return JsonResponse
      * @throws \Exception
      */
-    public function send(\JsonSerializable $payment) : JsonResponse
+    public function send(\JsonSerializable $payment, array $payer = []) : JsonResponse
     {
         ini_set('max_execution_time', 720);
+
         if ($payment instanceof Presential) {
             $uri = 'api/presential';
             $payer = $payment->getPayer();
         } else {
-            $payer = $this->getPayer();
+            //$payer = $this->getPayer();
+            $payer = empty($payer) ? $this->getPayer() : $payer;
+
             if ($payment instanceof Boleto) {
                 $uri = 'api/boleto';
             } elseif ($payment instanceof CreditCard) {
@@ -124,19 +126,18 @@ class Client
                 throw new \Exception('Tipo não reconhecido.', 400);
             }
         }
+
         try{
-            $form_params = array_merge(compact('payer'), $payment->jsonSerialize());
-            $result = $this->client->post($uri, compact('form_params'));
+            $formData = array_merge(compact('payer'), $payment->jsonSerialize());
+            $result = $this->client->post($uri, compact('formData'));
 
             return \response()->json(json_decode($result->getBody()));
-        }catch (\GuzzleHttp\Exception\ClientException $exception) {
+        } catch (\GuzzleHttp\Exception\ClientException $exception) {
             $response = $exception->getResponse();
             $responseBodyAsString = json_decode($response->getBody()->getContents(), true);
 
             return response()->json(
-                [
-                    'message' => isset($responseBodyAsString['errors']) ? $responseBodyAsString['errors'] : $responseBodyAsString['message']
-                ],
+                ['message' => $responseBodyAsString['errors'] ?? $responseBodyAsString['message']],
                 $exception->getCode() === 0 ? 400 : $exception->getCode()
             );
         }
