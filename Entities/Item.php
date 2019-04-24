@@ -65,19 +65,25 @@ class Item implements \JsonSerializable
 
     /**
      * @param Detail $detail
+     * @return Item
      */
-    public function addDetail(Detail $detail)
+    public function addDetail(Detail $detail) : self
     {
         $this->details[] = $detail;
+
+        return $this;
     }
 
     /**
      * @param string $key
      * @param float $value
+     * @return Item
      */
-    public function addDiscount(string $key, float $value)
+    public function addDiscount(string $key, float $value) : self
     {
         $this->discounts[$key] = $value;
+
+        return $this;
     }
 
     /**

@@ -8,6 +8,7 @@ use Payments\Client\Entities\Boleto;
 use Payments\Client\Entities\CreditCard;
 use Payments\Client\Entities\DebitCard;
 use Payments\Client\Entities\Free;
+use Payments\Client\Entities\PaymentAbstract;
 use Payments\Client\Entities\Presential;
 
 class Client
@@ -109,35 +110,26 @@ class Client
     {
         ini_set('max_execution_time', 720);
 
-        if ($payment instanceof Presential) {
-            $uri = 'api/presential';
-            $payer = $payment->getPayer();
-        } else {
-            //$payer = $this->getPayer();
-            $payer = empty($payer) ? $this->getPayer() : $payer;
+        $payer = empty($payer) ? $this->getPayer() : $payer;
 
-            if ($payment instanceof Boleto) {
-                $uri = 'api/boleto';
-            } elseif ($payment instanceof CreditCard) {
-                $uri = 'api/credit';
-            } elseif ($payment instanceof Free) {
-                $uri = 'api/free';
-            } else {
-                throw new \Exception('Tipo não reconhecido.', 400);
-            }
+        if (! $payment instanceof PaymentAbstract) {
+            throw new \Exception('Tipo não reconhecido.', 400);
+        }
+
+        if ($payment instanceof Presential) {
+            $payer = $payment->getPayer();
         }
 
         try{
             $formData = array_merge(compact('payer'), $payment->jsonSerialize());
-            $result = $this->client->post($uri, compact('formData'));
+            $result = $this->client->post($payment->getUri(), compact('formData'));
 
             return \response()->json(json_decode($result->getBody()));
         } catch (\GuzzleHttp\Exception\ClientException $exception) {
-            $response = $exception->getResponse();
-            $responseBodyAsString = json_decode($response->getBody()->getContents(), true);
+            $response = json_decode($exception->getResponse()->getBody()->getContents(), true);
 
             return response()->json(
-                ['message' => $responseBodyAsString['errors'] ?? $responseBodyAsString['message']],
+                ['message' => $response['errors'] ?? $response['message']],
                 $exception->getCode() === 0 ? 400 : $exception->getCode()
             );
         }

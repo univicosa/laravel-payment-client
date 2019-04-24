@@ -11,6 +11,19 @@ namespace Payments\Client\Entities;
 class Free extends PaymentAbstract implements \JsonSerializable
 {
     /**
+     * @var string
+     */
+    private $uri = 'api/free';
+
+    /**
+     * @return string
+     */
+    public function getUri() : string
+    {
+        return $this->uri;
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize(): array

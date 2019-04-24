@@ -7,6 +7,11 @@ class Presential extends PaymentAbstract implements \JsonSerializable
     /**
      * @var string
      */
+    private $uri = 'api/presential';
+
+    /**
+     * @var string
+     */
     const MONEY = 'money';
 
     /**
@@ -51,10 +56,24 @@ class Presential extends PaymentAbstract implements \JsonSerializable
 
     /**
      * @param Payer $payer
+     * @return Presential
      */
-    public function setPayer(Payer $payer)
+    public function setPayer(Payer $payer) : self
     {
         $this->payer = $payer;
+
+        return $this;
+    }
+
+    /**
+     * @param Responsible $responsible
+     * @return Presential
+     */
+    public function setResponsible(Responsible $responsible) : self
+    {
+        $this->responsible = $responsible;
+
+        return $this;
     }
 
     /**
@@ -66,11 +85,11 @@ class Presential extends PaymentAbstract implements \JsonSerializable
     }
 
     /**
-     * @param Responsible $responsible
+     * @return string
      */
-    public function setResponsible(Responsible $responsible)
+    public function getUri() : string
     {
-        $this->responsible = $responsible;
+        return $this->uri;
     }
 
     /**

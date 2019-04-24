@@ -7,6 +7,11 @@ class CreditCard extends PaymentAbstract implements \JsonSerializable
     /**
      * @var string
      */
+    private $uri = 'api/credit';
+
+    /**
+     * @var string
+     */
     private $token;
 
     /**
@@ -38,6 +43,14 @@ class CreditCard extends PaymentAbstract implements \JsonSerializable
     public function getInstallments(): int
     {
         return $this->installments;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri() : string
+    {
+        return $this->uri;
     }
 
     /**

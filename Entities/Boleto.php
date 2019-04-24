@@ -5,6 +5,11 @@ namespace Payments\Client\Entities;
 class Boleto extends PaymentAbstract implements \JsonSerializable
 {
     /**
+     * @var string
+     */
+    private $uri = 'api/boleto';
+
+    /**
      * @var array
      */
     private $descriptions;
@@ -33,6 +38,14 @@ class Boleto extends PaymentAbstract implements \JsonSerializable
         $this->descriptions[] = compact('description');
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri() : string
+    {
+        return $this->uri;
     }
 
     /**

@@ -56,9 +56,11 @@ class Payment implements \JsonSerializable
         $value = $this->value;
         $operator = $this->operator;
         $items = [];
+
         foreach ($this->items as $item) {
             $items[] = $item->jsonSerialize();
         }
+
         return compact('value', 'operator', 'items');
     }
 }

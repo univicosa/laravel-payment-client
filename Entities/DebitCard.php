@@ -9,6 +9,11 @@ class DebitCard extends PaymentAbstract implements \JsonSerializable
     /**
      * @var string
      */
+    private $uri = 'api/debit';
+
+    /**
+     * @var string
+     */
     private $number;
 
     /**
@@ -58,6 +63,14 @@ class DebitCard extends PaymentAbstract implements \JsonSerializable
         $this->cvv = $cvv;
         $this->expiration = Carbon::createFromFormat('m/Y', $expiration);
         $this->callback = $callback;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri() : string
+    {
+        return $this->uri;
     }
 
     /**
