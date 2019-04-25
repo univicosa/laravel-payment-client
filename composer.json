@@ -1,35 +1,35 @@
 {
-    "name": "univicosa/laravel-payment-client",
-    "license": "MIT",
-    "description": "Payment Client",
-    "version": "v1.0.0",
-    "authors": [
-        {
-            "name": "webmaster-uni",
-            "email": "webmaster@univicosa.com.br"
-        }
-    ],
-    "extra": {
-        "laravel": {
-            "providers": [
-                "Payments\\Client\\Providers\\ClientServiceProvider"
-            ],
-            "aliases": {
-                "Payment": "Payments\\Client\\Facades\\Payment"
-            }
-        }
-    },
-    "require": {
-        "php": ">=7.0.0",
-        "univicosa/laravel-openid-client": ">=0.7.3",
-        "guzzlehttp/guzzle": "^6.3",
-        "laravel/framework": ">=5.4",
-        "barryvdh/laravel-cors": "^0.11.0",
-        "lcobucci/jwt": "^3.2"
-    },
-    "autoload": {
-        "psr-4": {
-            "Payments\\Client\\": ""
-        }
+  "name": "univicosa/laravel-payment-client",
+  "license": "MIT",
+  "description": "Payment Client",
+  "version": "v2.1.0",
+  "authors": [
+    {
+      "name": "webmaster-uni",
+      "email": "webmaster@univicosa.com.br"
     }
+  ],
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Payments\\Client\\Providers\\ClientServiceProvider"
+      ],
+      "aliases": {
+        "Payment": "Payments\\Client\\Facades\\Payment"
+      }
+    }
+  },
+  "require": {
+    "php": ">=7.0.0",
+    "univicosa/laravel-openid-client": ">=0.7.3",
+    "guzzlehttp/guzzle": "^6.3",
+    "laravel/framework": ">=5.4",
+    "barryvdh/laravel-cors": "^0.11.0",
+    "lcobucci/jwt": "^3.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Payments\\Client\\": ""
+    }
+  }
 }
