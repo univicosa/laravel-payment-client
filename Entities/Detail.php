@@ -2,7 +2,6 @@
 
 namespace Payments\Client\Entities;
 
-
 class Detail implements \JsonSerializable
 {
     /**

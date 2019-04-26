@@ -121,8 +121,8 @@ class Client
         }
 
         try{
-            $formData = array_merge(compact('payer'), $payment->jsonSerialize());
-            $result = $this->client->post($payment->getUri(), compact('formData'));
+            $form_params = array_merge(compact('payer'), $payment->jsonSerialize());
+            $result = $this->client->post($payment->getUri(), compact('form_params'));
 
             return \response()->json(json_decode($result->getBody()));
         } catch (\GuzzleHttp\Exception\ClientException $exception) {
