@@ -35,6 +35,11 @@ class Presential extends PaymentAbstract implements \JsonSerializable
     private $installments;
 
     /**
+     * @var string
+     */
+    private $token;
+
+    /**
      * @var Payer
      */
     private $payer;
@@ -48,10 +53,11 @@ class Presential extends PaymentAbstract implements \JsonSerializable
      * @param string $type
      * @param int $installments
      */
-    public function __construct(string $type, int $installments = 1)
+    public function __construct(string $type, int $installments = 1, $token = null)
     {
         $this->type = $type;
         $this->installments = $installments;
+        $this->token = $token;
     }
 
     /**
@@ -102,6 +108,7 @@ class Presential extends PaymentAbstract implements \JsonSerializable
     public function jsonSerialize() : array
     {
         $presential = [
+            'token' => $this->token,
             'type' => $this->type,
             'installments' => $this->installments,
             'responsible' => $this->responsible->jsonSerialize()

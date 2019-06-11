@@ -73,6 +73,7 @@ The Payment request should follow the rules for all Payment instances. All types
     "email" : "bail|required|string|min:5",
     "address" : "bail|required|string|min:3",
     "district" : "bail|required|string|min:2",
+    "number" => "bail|required|string|min:1",
     "cep" : "bail|required|string|min:8|max:9|cep",
     "state" : "bail|required|string|min:2",
     "city" : "bail|required|string|min:3",
@@ -140,18 +141,14 @@ All current payments via boleto accepts only the SICOOB operator and the return 
 
 ### Credit card
 
-All current payments via credit card accpts the brands American Express, Diners Club, Discover, JCB, MasterCard, Visa, Elo and Aura.
+All current payments via credit card accpts the brands Visa, Mastercard, American Express, ELO, Diners and Amex.
 
 **Request body**
 
 ```json
 {
   "credit_card" : {
-    "cvv" : "bail|required|digits_between:3,4",
-    "brand" : "bail|required|string",
-    "number" : "bail|required|digits_between:13,16|card",
-    "holder" : "bail|required|string|min:5",
-    "expiration" : "bail|required|date_format:m/Y|after_or_equal:now"
+    "token" : "bail|required"
   },
   "installments" : "bail|required|integer|min:1|max:6"
 }
@@ -178,6 +175,7 @@ The presential payment are maided by authorized users under a admin panel and ac
   "presential" : {
     "type" : "bail|required|string",
     "installments" : "bail|required|integer|min:1",
+    "token" : "bail|required",
     "responsible" : {
       "name" : "bail|required|string|min:3",
       "email" : "bail|required|string|email",
@@ -237,6 +235,13 @@ Payments made by boleto and paid will generate a refund in name of the payer and
 ```php
 @method \Payment::cancel(string $type, string $id): array
 @api DELETE '/api/{version}/{PaymentType}/{paymentId}'
+
+@return array with the response of Delete action
+```
+
+```php
+@method \Payment::cancelItem(string $type, string $id, array $data, bool $cancel): array
+@api DELETE '/api/{version}/{PaymentType}/item/{paymentId}'
 
 @return array with the response of Delete action
 ```

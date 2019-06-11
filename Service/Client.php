@@ -51,6 +51,7 @@ class Client
     /**
      * @param string $type
      * @param string $id
+     *
      * @return array
      */
     public function cancel(string $type, string $id) : array
@@ -68,8 +69,41 @@ class Client
             return json_decode($result->getBody(), true);
         } catch (\Exception $exception) {
             return [
-                'message' => json_decode($exception->getResponse()->getBody()->getContents())->message,
+                'message' => $exception->getCode() === 1 ? $exception->getMessage() : json_decode($exception->getResponse()->getBody()->getContents())->message,
                 'code' => $exception->getCode()
+            ];
+        }
+    }
+
+    /**
+     * @param string $type
+     * @param string $id
+     * @param array  $data
+     * @param bool   $cancel
+     *
+     * @return array
+     */
+    public function cancelItem(string $type, string $id, array $data, bool $cancel) : array
+    {
+        try {
+            $types = ['boleto', 'credit', 'debit', 'presential', 'free'];
+            if (!in_array($type, $types)) {
+                throw new \Exception(sprintf(
+                    'Tipo de cancelamento não suportado. Os tipos suportados são: %s', implode(', ', $types)
+                ));
+            }
+
+            $form_params = [];
+            $form_params['item'] = $data;
+            $form_params['cancel_payment'] = $cancel;
+
+            $result = $this->client->delete("api/$type/item/$id",compact('form_params'));
+
+            return json_decode($result->getBody(), true);
+        }catch (\Exception $exception) {
+            return [
+                'message' => $exception->getCode() === 1 ? $exception->getMessage() : json_decode($exception->getResponse()->getBody()->getContents())->message,
+                'code' => $exception->getCode() === 0 ? 500 : $exception->getCode()
             ];
         }
     }
@@ -93,6 +127,7 @@ class Client
             'email' => $user['email'],
             'address' => $user['address']['street'],
             'district' => $user['address']['district'],
+            'number' => $user['address']['number'],
             'cep' => $user['address']['zip'],
             'state' => $user['address']['state']['initials'],
             'city' => $user['address']['city'],
