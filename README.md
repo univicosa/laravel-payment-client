@@ -73,7 +73,7 @@ The Payment request should follow the rules for all Payment instances. All types
     "email" : "bail|required|string|min:5",
     "address" : "bail|required|string|min:3",
     "district" : "bail|required|string|min:2",
-    "number" => "bail|required|string|min:1",
+    "number" : "bail|required|string|min:1",
     "cep" : "bail|required|string|min:8|max:9|cep",
     "state" : "bail|required|string|min:2",
     "city" : "bail|required|string|min:3",
