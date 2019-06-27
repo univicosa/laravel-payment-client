@@ -36,7 +36,7 @@ class Beneficiary implements \JsonSerializable
     {
         $this->name = $name;
         $this->account = $account;
-        $this->validUntil = $validUntil;
+        $this->valid_until = $validUntil;
         $this->system = config('payment.system');
     }
 
