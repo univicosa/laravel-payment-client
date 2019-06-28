@@ -24,7 +24,7 @@ class Beneficiary implements \JsonSerializable
     /**
      * @var Carbon
      */
-    private $validUntil;
+    private $valid_until;
 
     /**
      * Beneficiary constructor.
@@ -32,11 +32,11 @@ class Beneficiary implements \JsonSerializable
      * @param string $account
      * @param Carbon $validUntil
      */
-    public function __construct(string $name, string $account, Carbon $validUntil)
+    public function __construct(string $name, string $account, Carbon $valid_until)
     {
         $this->name = $name;
         $this->account = $account;
-        $this->valid_until = $validUntil;
+        $this->valid_until = $valid_until;
         $this->system = config('payment.system');
     }
 
@@ -48,8 +48,8 @@ class Beneficiary implements \JsonSerializable
         $name = $this->name;
         $system = $this->system;
         $account = $this->account;
-        $validUntil = (string) $this->validUntil;
+        $valid_until = (string) $this->valid_until;
 
-        return compact('name', 'system', 'account', 'validUntil');
+        return compact('name', 'system', 'account', 'valid_until');
     }
 }
