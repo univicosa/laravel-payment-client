@@ -2,6 +2,7 @@
   "name": "univicosa/laravel-payment-client",
   "license": "MIT",
   "description": "Payment Client",
+  "version": "2.2.1",
   "authors": [
     {
       "name": "webmaster-uni",
